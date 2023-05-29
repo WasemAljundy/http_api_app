@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:api_project/api/controllers/images_api_controller.dart';
 import 'package:api_project/getx/images_getx_controller.dart';
 import 'package:api_project/helpers/helpers.dart';
 import 'package:flutter/material.dart';

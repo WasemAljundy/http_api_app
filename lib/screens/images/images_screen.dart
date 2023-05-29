@@ -1,6 +1,4 @@
-import 'package:api_project/api/api_settings.dart';
 import 'package:api_project/getx/images_getx_controller.dart';
-import 'package:api_project/models/student_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,10 +10,12 @@ class ImagesScreen extends StatefulWidget {
 }
 
 class _ImagesScreenState extends State<ImagesScreen> {
-  final ImageGetxController _imageGetxController =
-      Get.put(ImageGetxController());
-  late Future<List<StudentImage>> _future;
-  List<StudentImage> _studentImages = <StudentImage>[];
+
+  @override
+  void initState() {
+    Get.put(ImageGetxController());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +48,12 @@ class _ImagesScreenState extends State<ImagesScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Image.network(
-                    'http://demo-api.mr-dev.tech/images/2023-05-28%2017:41:23_student.jpg'
-                    // ApiSettings.getImageUrl(
-                    //     controller.studentImages[index].image),
+                    controller.studentImages[index].imageUrl,fit: BoxFit.cover,
                   ),
                 );
               },
             );
-          } else {
+          } else if (controller.studentImages.isEmpty) {
             return const Center(
               child: Column(
                 children: [
@@ -74,6 +72,9 @@ class _ImagesScreenState extends State<ImagesScreen> {
                 ],
               ),
             );
+          }
+          else {
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),

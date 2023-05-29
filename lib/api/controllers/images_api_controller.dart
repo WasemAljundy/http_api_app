@@ -18,13 +18,16 @@ class ImagesApiController with Helpers {
   Future<void> uploadImage(BuildContext context,
       {required String path,
       required UploadImageCallBack uploadImageCallBack}) async {
-    var url = Uri.parse(ApiSettings.images.replaceFirst('{id}', ''));
+    var url = Uri.parse(ApiSettings.images.replaceFirst('/{id}', ''));
     var request = http.MultipartRequest('POST', url);
+
     http.MultipartFile imageFile =
         await http.MultipartFile.fromPath('image', path);
     request.files.add(imageFile);
-    request.headers[HttpHeaders.authorizationHeader] = SharedPrefController().token;
+    request.headers[HttpHeaders.authorizationHeader] =
+        SharedPrefController().token;
     request.headers[HttpHeaders.acceptHeader] = 'application/json';
+
     var response = await request.send();
     response.stream.transform(utf8.decoder).listen((event) {
       if (response.statusCode == 201) {
@@ -37,17 +40,12 @@ class ImagesApiController with Helpers {
             studentImage: studentImage);
 
         showSnackBar(context: context, message: jsonResponse['message']);
-
-      }
-
-      else if (response.statusCode == 301) {
+      } else if (response.statusCode == 301) {
         uploadImageCallBack(
           status: false,
           message: 'Error',
         );
-      }
-
-      else if (response.statusCode == 400) {
+      } else if (response.statusCode == 400) {
         uploadImageCallBack(
           status: false,
           message: jsonDecode(event)['message'],
@@ -61,25 +59,19 @@ class ImagesApiController with Helpers {
     });
   }
 
-  Future<List<StudentImage>> images(BuildContext context) async {
+  Future<List<StudentImage>> images() async {
     var url = Uri.parse(ApiSettings.images.replaceFirst('/{id}', ''));
     var response = await http.get(url, headers: {
       HttpHeaders.acceptHeader: 'application/json',
       HttpHeaders.authorizationHeader: SharedPrefController().token,
     });
-    if (response.statusCode == 200 && context.mounted) {
+    if (response.statusCode == 200) {
       var imagesJsonArray = jsonDecode(response.body)['data'] as List;
       return imagesJsonArray
           .map((imageJsonObject) => StudentImage.fromJson(imageJsonObject))
           .toList();
-    } else {
-      showSnackBar(
-        context: context,
-        message: 'message',
-        error: true,
-      );
-      return [];
     }
+    return [];
   }
 
   Future<bool> deleteImage(BuildContext context, {required int id}) async {

@@ -11,12 +11,12 @@ class ImageGetxController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    readImages();
     super.onInit();
   }
 
-  Future<void> read(BuildContext context) async {
-    studentImages.value = await _imagesApiController.images(context);
+  Future<void> readImages() async {
+    studentImages.value = await _imagesApiController.images();
   }
 
   Future<void> uploadImage(
