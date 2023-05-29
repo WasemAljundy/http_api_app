@@ -27,7 +27,6 @@ class ImagesApiController with Helpers {
     request.headers[HttpHeaders.acceptHeader] = 'application/json';
     var response = await request.send();
     response.stream.transform(utf8.decoder).listen((event) {
-      print('Status Code: ${response.statusCode}');
       if (response.statusCode == 201) {
         var jsonResponse = jsonDecode(event);
         StudentImage studentImage =
