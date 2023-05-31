@@ -75,8 +75,7 @@ class ImagesApiController with Helpers {
   }
 
   Future<bool> deleteImage(BuildContext context, {required int id}) async {
-    var url =
-        Uri.parse(ApiSettings.images.replaceFirst('/{id}', id.toString()));
+    var url = Uri.parse(ApiSettings.images.replaceFirst('{id}', id.toString()));
     var response = await http.delete(url, headers: {
       HttpHeaders.acceptHeader: 'application/json',
       HttpHeaders.authorizationHeader: SharedPrefController().token,
@@ -84,7 +83,9 @@ class ImagesApiController with Helpers {
 
     if (response.statusCode == 200 && context.mounted) {
       showSnackBar(
-          context: context, message: jsonDecode(response.body)['message']);
+        context: context,
+        message: jsonDecode(response.body)['message'],
+      );
       return true;
     } else {
       showSnackBar(

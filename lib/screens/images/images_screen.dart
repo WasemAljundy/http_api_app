@@ -10,7 +10,6 @@ class ImagesScreen extends StatefulWidget {
 }
 
 class _ImagesScreenState extends State<ImagesScreen> {
-
   @override
   void initState() {
     Get.put(ImageGetxController());
@@ -44,11 +43,54 @@ class _ImagesScreenState extends State<ImagesScreen> {
               itemBuilder: (context, index) {
                 return Card(
                   elevation: 4,
+                  clipBehavior: Clip.antiAlias,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Image.network(
-                    controller.studentImages[index].imageUrl,fit: BoxFit.cover,
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        controller.studentImages[index].imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.bottomCenter,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 40,
+                                color: Colors.white60,
+                                alignment: Alignment.center,
+                                padding:
+                                    const EdgeInsetsDirectional.only(start: 10),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        controller.studentImages[index].image,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () async => await deleteImage(
+                                        id: controller.studentImages[index].id,
+                                      ),
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -56,10 +98,11 @@ class _ImagesScreenState extends State<ImagesScreen> {
           } else if (controller.studentImages.isEmpty) {
             return const Center(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.warning,
-                    size: 80,
+                    size: 85,
                     color: Colors.grey,
                   ),
                   Text(
@@ -67,17 +110,21 @@ class _ImagesScreenState extends State<ImagesScreen> {
                     style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
                   ),
                 ],
               ),
             );
-          }
-          else {
+          } else {
             return const Center(child: CircularProgressIndicator());
           }
         },
       ),
     );
+  }
+
+  Future<void> deleteImage({required int id}) async {
+    await ImageGetxController.to.deleteImage(context, id: id);
   }
 }
