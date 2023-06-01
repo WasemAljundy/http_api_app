@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.1.1
   image_picker:
   get: ^4.6.5
+  material_dialogs: ^1.1.4
 
 dev_dependencies:
   flutter_test:

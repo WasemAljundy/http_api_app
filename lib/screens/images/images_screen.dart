@@ -1,6 +1,9 @@
 import 'package:api_project/getx/images_getx_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 
 class ImagesScreen extends StatefulWidget {
   const ImagesScreen({Key? key}) : super(key: key);
@@ -75,7 +78,7 @@ class _ImagesScreenState extends State<ImagesScreen> {
                                       ),
                                     ),
                                     IconButton(
-                                      onPressed: () async => await deleteImage(
+                                      onPressed: () async => await showDeleteDialog(
                                         id: controller.studentImages[index].id,
                                       ),
                                       icon: Icon(
@@ -124,7 +127,38 @@ class _ImagesScreenState extends State<ImagesScreen> {
     );
   }
 
+
   Future<void> deleteImage({required int id}) async {
     await ImageGetxController.to.deleteImage(context, id: id);
+    if (context.mounted) Navigator.pop(context);
   }
+
+  Future<void> showDeleteDialog({required int id}) async {
+    Dialogs.materialDialog(
+      msg: 'Are you sure to delete this image?\nYou can\'t undo this !',
+      title: 'Delete',
+      color: Colors.white,
+      titleStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      msgStyle: const TextStyle(fontSize: 17),
+      context: context,
+      actions: [
+        IconsOutlineButton(
+          onPressed: () => Navigator.pop(context),
+          text: 'Cancel',
+          iconData: Icons.cancel_outlined,
+          textStyle: const TextStyle(color: Colors.grey),
+          iconColor: Colors.grey,
+        ),
+        IconsButton(
+          onPressed: () => deleteImage(id: id),
+          text: 'Delete',
+          iconData: Icons.delete,
+          color: Colors.red,
+          textStyle: const TextStyle(color: Colors.white),
+          iconColor: Colors.white,
+        ),
+      ],
+    );
+  }
+
 }
